@@ -45,6 +45,3 @@ products:
   # Canary Rollout
   canaryRollout:
     enabled: false
-$APP:
-  deployment:
-    imageTag: 0.1.0
