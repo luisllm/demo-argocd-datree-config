@@ -40,7 +40,13 @@ graphql:
     enabled: false
   # Ingress 
   ingress:
-    enabled: false
+    enabled: true
+    name: graphql-ingress
+    namespace: ecommerce
+    host: graphql.test.com
+    path: /
+    serviceName: graphql-service
+    servicePort: 3002    
   # Horizontal Pod Autoscaler
   hpa:
     enabled: false
