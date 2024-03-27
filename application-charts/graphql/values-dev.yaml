@@ -27,7 +27,7 @@ graphql:
     name: graphql-service
     namespace: ecommerce
     appName: graphql
-    type: LoadBalancer
+    type: ClusterIP
     servicePort: 3002
     targetPort: 3002
   # Service Account object
