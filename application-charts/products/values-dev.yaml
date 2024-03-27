@@ -8,7 +8,7 @@ products:
     enabled: true
     name: products
     namespace: ecommerce
-    replicas: 3
+    replicas: 1
     appName: products
     role: api
     containerName: products-container
