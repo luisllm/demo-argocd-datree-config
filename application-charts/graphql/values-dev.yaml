@@ -8,7 +8,7 @@ graphql:
     enabled: true
     name: graphql
     namespace: ecommerce
-    replicas: 3
+    replicas: 1
     appName: graphql
     role: api
     containerName: graphql-container
