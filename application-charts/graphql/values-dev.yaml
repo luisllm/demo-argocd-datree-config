@@ -1,5 +1,7 @@
 global:
   chartName: graphql
+  deployment:
+    imageTag: 0.1.0
 graphql:
   # Deployment object
   deployment:
@@ -11,7 +13,7 @@ graphql:
     role: api
     containerName: graphql-container
     imageRepository: lukondefmwila/ecommerce-graphql
-    imageTag: "0.0.0"
+    imageTag: "0.1.0"
     port: 3002
   # Updated (New) Deployment resource
   newDeployment:
@@ -44,4 +46,4 @@ graphql:
     enabled: false
   # Canary Rollout
   canaryRollout:
-    enabled: false 
+    enabled: false
