@@ -1,12 +1,12 @@
 global:
   chartName: orders
   deployment:
-    imageTag: 0.0.0
+    imageTag: 0.1.0
 orders:
   # Deployment object
   deployment:
     enabled: false
-    imageTag: 0.0.0
+    imageTag: 0.1.0
   # Updated (New) Deployment resource
   newDeployment:
     enabled: true
