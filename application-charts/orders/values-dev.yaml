@@ -47,3 +47,9 @@ orders:
   # Canary Rollout # Canary Service object (for Argo Rollouts)
   canaryRollout:
     enabled: false
+  # Istio - Gateway 
+  gateway:
+    enabled: false
+  # Istio - VirtualService 
+  virtualservice:
+    enabled: false
