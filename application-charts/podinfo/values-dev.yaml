@@ -188,3 +188,9 @@ probes:
     failureThreshold: 20
     successThreshold: 1
     periodSeconds: 10
+
+
+gateway:
+  enabled: true
+virtualservice:
+  enabled: true
