@@ -47,7 +47,7 @@ products:
   # Canary Rollout
   canaryRollout:
     enabled: false
-    # Istio - Gateway 
+  # Istio - Gateway 
   gateway:
     enabled: false
   # Istio - VirtualService 
