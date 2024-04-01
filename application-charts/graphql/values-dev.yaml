@@ -53,3 +53,13 @@ graphql:
   # Canary Rollout
   canaryRollout:
     enabled: false
+  # Istio - Gateway 
+  gateway:
+    enabled: true
+    name: graphql-gateway
+    namespace: ecommerce
+  # Istio - VirtualService 
+  virtualservice:
+    enabled: true
+    name: graphql-vs
+    namespace: ecommerce
