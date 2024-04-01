@@ -40,7 +40,7 @@ graphql:
     enabled: false
   # Ingress 
   ingress:
-    enabled: true
+    enabled: false
     name: graphql-ingress
     namespace: ecommerce
     host: graphql.test.com
