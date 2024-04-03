@@ -31,7 +31,7 @@ jobs:
           cp envs/develop/podinfo-version.yaml envs/staging/podinfo-version.yaml
 
           # push the change to the new branch
-          git add app/environments/staging/version.yaml
+          git add envs/staging/podinfo-version.yaml
           git commit -m "Promote develop to staging"
           git push -u origin staging/${{ github.sha }}
 
