@@ -1,18 +1,18 @@
-name: Promote podinfo from develop to staging
+name: Promote orders from develop to staging
 
 on:
   push:
     branches:
       - main
     paths:
-      - podinfo/envs/develop/version.yaml
+      - orders/envs/develop/version.yaml
 
 permissions:
   contents: write
   pull-requests: write
 
 env:
-  APP: "podinfo"
+  APP: "orders"
 
 jobs:
   promote:

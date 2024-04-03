@@ -1,18 +1,18 @@
-name: Promote podinfo from develop to staging
+name: Promote graphql from develop to staging
 
 on:
   push:
     branches:
       - main
     paths:
-      - podinfo/envs/develop/version.yaml
+      - graphql/envs/develop/version.yaml
 
 permissions:
   contents: write
   pull-requests: write
 
 env:
-  APP: "podinfo"
+  APP: "graphql"
 
 jobs:
   promote:

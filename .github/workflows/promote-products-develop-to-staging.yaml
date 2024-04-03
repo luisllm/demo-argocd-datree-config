@@ -5,11 +5,14 @@ on:
     branches:
       - main
     paths:
-      - envs/develop/products-version.yaml
+      - products/envs/develop/version.yaml
 
 permissions:
   contents: write
   pull-requests: write
+
+env:
+  APP: "products"
 
 jobs:
   promote:
@@ -28,11 +31,11 @@ jobs:
           git switch -c staging/${{ github.sha }}
 
           # promote the change
-          cp envs/develop/products-version.yaml envs/staging/products-version.yaml
+          cp $APP/envs/develop/version.yaml $APP/envs/staging/version.yaml
 
           # push the change to the new branch
-          git add envs/staging/products-version.yaml
-          git commit -m "Promote develop to staging"
+          git add $APP/envs/staging/version.yaml
+          git commit -m "Promote $APP develop to staging"
           git push -u origin staging/${{ github.sha }}
 
       - name: Create Pull Request with the changes        
@@ -42,5 +45,5 @@ jobs:
           gh pr create \
             -B main \
             -H staging/${{ github.sha }} \
-            --title "Promote develop to staging" \
+            --title "Promote $APP develop to staging" \
             --body "Automatically created by GitHub Actions"
