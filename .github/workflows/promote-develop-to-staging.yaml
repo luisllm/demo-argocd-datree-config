@@ -21,8 +21,8 @@ jobs:
       - name: Create new branch to do changes
         run: |
           # configure git client
-          git config --global user.email "<email address>"
-          git config --global user.name "<name>"
+          git config user.email "luis.longo.m@gmail.com"
+          git config user.name "luisllm"
 
           # create a new branch
           git switch -c staging/${{ github.sha }}
