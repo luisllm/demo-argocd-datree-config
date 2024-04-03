@@ -1,11 +1,11 @@
-name: Promote from develop to staging
+name: Promote products from develop to staging
 
 on:
   push:
     branches:
       - main
     paths:
-      - envs/develop/podinfo-version.yaml
+      - envs/develop/products-version.yaml
 
 permissions:
   contents: write
@@ -28,10 +28,10 @@ jobs:
           git switch -c staging/${{ github.sha }}
 
           # promote the change
-          cp envs/develop/podinfo-version.yaml envs/staging/podinfo-version.yaml
+          cp envs/develop/products-version.yaml envs/staging/products-version.yaml
 
           # push the change to the new branch
-          git add envs/staging/podinfo-version.yaml
+          git add envs/staging/products-version.yaml
           git commit -m "Promote develop to staging"
           git push -u origin staging/${{ github.sha }}
 
