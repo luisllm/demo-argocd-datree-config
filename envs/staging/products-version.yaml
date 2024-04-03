@@ -1,3 +1,3 @@
-global:
+products:
   deployment:
     imageTag: 0.1.7
