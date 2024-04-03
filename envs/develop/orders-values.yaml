@@ -13,7 +13,6 @@ orders:
     role: api
     containerName: orders-container
     imageRepository: 798842239772.dkr.ecr.us-east-1.amazonaws.com/ecommerce-orders
-    imageTag: 0.1.1
     port: 3003
   # Updated (New) Deployment resource
   newDeployment:

@@ -1,7 +1,5 @@
 global:
   chartName: products
-  deployment:
-    imageTag: 0.1.7
 products:
   # Deployment object
   deployment:
@@ -13,7 +11,6 @@ products:
     role: api
     containerName: products-container
     imageRepository: 798842239772.dkr.ecr.us-east-1.amazonaws.com/ecommerce-products
-    imageTag: 0.1.7
     port: 3004
   # Updated (New) Deployment resource
   newDeployment:

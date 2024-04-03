@@ -1,0 +1,3 @@
+graphql:
+  deployment:
+    imageTag: "0.1.0"
