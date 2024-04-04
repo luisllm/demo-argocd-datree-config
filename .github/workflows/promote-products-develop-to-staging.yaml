@@ -45,5 +45,5 @@ jobs:
           gh pr create \
             -B main \
             -H staging/${{ github.sha }} \
-            --title "Promote $APP develop to staging" \
+            --title "Promote $APP app from develop to staging" \
             --body "Automatically created by GitHub Actions"
