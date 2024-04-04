@@ -6,6 +6,10 @@ on:
       - main
     paths:
       - graphql/envs/develop/version.yaml
+  workflow_dispatch:
+    branches:
+      - main
+
 
 permissions:
   contents: write
@@ -13,13 +17,95 @@ permissions:
 
 env:
   APP: "graphql"
+  # Credentials for deployment to AWS
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  ENVIRONMENT: "develop"
+  EKS_CLUSTER_NAME: "develop-eks-cluster"
+  NAMESPACE: "ecommerce"
+
 
 jobs:
-  promote:
+  tests:
+    name: "Tests on develop"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: "us-east-1"
+
+      - name: Update kube config
+        run: aws eks update-kubeconfig --name $EKS_CLUSTER_NAME
+
+      - name: Wait for 1 Minute
+        run: sleep 60
+
+      - name: Check $APP PODs are running
+        run: |
+          kubectl get pods -n $NAMESPACE -l app=$APP -o jsonpath='{range .items[*]}{.status.phase}{"\n"}{end}' | grep -qv "Running" && echo "One or more $APP pods are not in running state" && exit 1 || echo "All $APP pods are running"
+
+      # Install yq
+      - name: Install yq 
+        run: |
+          wget https://github.com/mikefarah/yq/releases/download/v4.12.0/yq_linux_amd64 -O /usr/bin/yq && chmod +x /usr/bin/yq
+          yq --version
+
+      - name: Get new version from config repo
+        run: |
+          image_tag=$(yq eval '.$APP.deployment.imageTag' "$APP/envs/develop/version.yaml")
+          echo "$image_tag"
+          echo "IMAGE_TAG=$image_tag" >>$GITHUB_ENV
+
+      - name: Compare version in the CONFIG repo (for $ENVIRONMENT), with the one running in $EKS_CLUSTER_NAME cluster
+        run: |
+          # Extracting the version from the string using cut
+          running_version=$(kubectl get pods -n "$NAMESPACE" -l app="$APP" -o jsonpath='{range .items[*]}{.spec.containers[?(@.name=="'"$APP"'-container")].image}{"\n"}{end}' | cut -d':' -f2)
+          
+          # Print debugging info
+          echo "Running version: '$running_version'"
+
+          if [ "$running_version" == "$IMAGE_TAG" ]; then
+              echo "Versions match"
+          else
+              echo "Versions do not match. Version running in $EKS_CLUSTER_NAME: $running_version . Version specified in the config repo for $ENVIRONMENT: $IMAGE_TAG"
+              exit 1
+          fi
+
+      # Get from AWS ParameterStore the public LB dns name created automatically when the Istio Ingress Gateway was deployed. It will be used to send requests
+      - name: Get AWS public LB DNS Name from ParameterStore
+        run: |
+          ingress_lb_dns=$(aws ssm get-parameter --name "/$ENVIRONMENT/ingress-public-load-balancer-dns" --query 'Parameter.Value' --output text)
+          echo "INGRESS_LB_DNS=$ingress_lb_dns" >>$GITHUB_ENV
+
+      - name: Send test request
+        run: |
+          # Send request
+          response_http_status_code=$(curl -s -o /dev/null -w "%{http_code}" -X GET \
+            --max-time 10 \
+            http://$INGRESS_LB_DNS/playground)
+         
+          echo "response_http_status: $response_http_status_code"
+          if [ "$response_http_status_code" -eq "200" ]; then
+            echo "OK"
+          else
+            echo "NOK"
+            exit 1
+          fi
+
+
+  promote:
+    name: "Promote to Staging"
+    runs-on: ubuntu-latest
+    needs: [tests]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
 
       - name: Create new branch to do changes
         run: |
@@ -45,5 +131,5 @@ jobs:
           gh pr create \
             -B main \
             -H staging/${{ github.sha }} \
-            --title "Promote $APP develop to staging" \
+            --title "Promote $APP app from develop to staging" \
             --body "Automatically created by GitHub Actions"
