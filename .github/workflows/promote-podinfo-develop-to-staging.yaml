@@ -58,14 +58,14 @@ jobs:
 
       - name: Get new version from config repo
         run: |
-          image_tag=$(yq eval ".$APP.deployment.imageTag" "$APP/envs/develop/version.yaml")
+          image_tag=$(yq eval ".$image.tag" "$APP/envs/develop/version.yaml")
           echo "$image_tag"
           echo "IMAGE_TAG=$image_tag" >>$GITHUB_ENV
 
       - name: Compare version in the CONFIG repo (for $ENVIRONMENT), with the one running in $EKS_CLUSTER_NAME cluster
         run: |
           # Extracting the version from the string using cut
-          running_version=$(kubectl get pods -n "$NAMESPACE" -l app.kubernetes.io/name=$APP -o jsonpath='{range .items[*]}{.spec.containers[?(@.name=="$APP")].image}{"\n"}{end}' | cut -d':' -f2)
+          running_version=$(kubectl get pods -n "$NAMESPACE" -l app.kubernetes.io/name=$APP -o jsonpath='{range .items[*]}{.spec.containers[?(@.name=="'"$APP"'")].image}{"\n"}{end}' | cut -d':' -f2)
           
           # Print debugging info
           echo "Running version: '$running_version'"
