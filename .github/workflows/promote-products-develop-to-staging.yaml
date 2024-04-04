@@ -64,7 +64,17 @@ jobs:
 
       - name: Compare version in the CONFIG repo (for $ENVIRONMENT), with the one running in $EKS_CLUSTER_NAME cluster
         run: |
-          running_version=$(kubectl get pods -n "$NAMESPACE" -l app="$APP" -o jsonpath='{range .items[*]}{.spec.containers[?(@.name=="'"$APP"'-container")].image}{"\n"}{end}' | cut -d':' -f3)
+          # Extracting the version from the string using cut
+          running_version=$(kubectl get pods -n "$NAMESPACE" -l app="$APP" -o jsonpath='{range .items[*]}{.spec.containers[?(@.name=="'"$APP"'-container")].image}{"\n"}{end}' | cut -d':' -f2)
+          
+          # Print debugging info
+          echo "Running version: '$running_version'"
+
+          # Extracting the version from the string using cut and awk to remove any leading whitespace
+          running_version=$(echo "$running_version" | cut -d'/' -f2 | awk '{$1=$1;print}')
+          
+          # Print debugging info
+          echo "Running version: '$running_version'"
 
           if [ "$running_version" == "$IMAGE_TAG" ]; then
               echo "Versions match"
