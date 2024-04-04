@@ -64,8 +64,8 @@ jobs:
 
       - name: Compare version in the CONFIG repo (for $ENVIRONMENT), with the one running in $EKS_CLUSTER_NAME cluster
         run: |
-          running_version=$(kubectl get pods -n $NAMESPACE -l app=$APP -o jsonpath='{range .items[*]}{.spec.containers[?(@.name=="$APP-container")].image}{"\n"}{end}' | yq eval 'split(":") | last' -)
-          
+          running_version=$(kubectl get pods -n "$NAMESPACE" -l app="$APP" -o jsonpath='{range .items[*]}{.spec.containers[?(@.name=="'"$APP"'-container")].image}{"\n"}{end}' | cut -d':' -f3)
+
           if [ "$running_version" == "$IMAGE_TAG" ]; then
               echo "Versions match"
           else
@@ -96,7 +96,7 @@ jobs:
 
 
   promote:
-    name: "Promote"
+    name: "Promote to Staging"
     runs-on: ubuntu-latest
     needs: [tests]
     steps:
