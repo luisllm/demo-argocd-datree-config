@@ -58,7 +58,7 @@ jobs:
 
       - name: Get new version from config repo
         run: |
-          image_tag=$(yq eval '.$image.tag' "$APP/envs/develop/version.yaml")
+          image_tag=$(yq eval '.image.tag' "$APP/envs/develop/version.yaml")
           echo "$image_tag"
           echo "IMAGE_TAG=$image_tag" >>$GITHUB_ENV
 
