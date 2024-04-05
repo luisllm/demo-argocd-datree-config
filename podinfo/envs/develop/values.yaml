@@ -1,5 +1,9 @@
 replicaCount: 1
 
+ui:
+  color: "#34577c"
+  message: "hey"
+
 gateway:
   enabled: true
 virtualservice:
