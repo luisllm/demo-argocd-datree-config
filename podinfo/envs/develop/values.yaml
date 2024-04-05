@@ -1,7 +1,7 @@
 replicaCount: 1
 
 ui:
-  color: "#34577c"
+  color: "#008000"
   message: "hey"
 
 gateway:
